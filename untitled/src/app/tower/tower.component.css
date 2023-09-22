@@ -1,0 +1,12 @@
+.tower-div{
+  position: relative;
+  top: calc(50% - 100px);
+  left: calc(50% - 50px);
+  height: 130px;
+  width: 100px;
+}
+
+.tower-img{
+  height: 100%;
+  width: 100%;
+}
