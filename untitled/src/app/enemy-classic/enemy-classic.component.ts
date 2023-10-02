@@ -1,134 +1,77 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {Points} from "../AngularClasses/Points";
+import {EnemyReplacePosLogic} from "../AngularClasses/MathLogics";
 
 @Component({
   selector: 'app-enemy-classic',
   templateUrl: './enemy-classic.component.html',
   styleUrls: ['./enemy-classic.component.css']
 })
-export class EnemyClassicComponent implements AfterViewInit{
 
-  @ViewChild("enemyDiv") _enemy: ElementRef;
+export class EnemyClassicComponent implements AfterViewInit {
 
-  public _startPosX = Math.random()*window.innerWidth-25;
-  public _startPosY = Math.random()*window.innerHeight-45;
+    @ViewChild("enemyDiv") _enemy: ElementRef;
+    private readonly Coords: Points;
 
-  public _x: number;
-  public _y: number;
+    private MathLogicForMove: EnemyReplacePosLogic;
 
-  public _speed: number;
+    public _speedOfEnemyMove: number;
+    public _speedOfEnemyMoveAnimation: number;
 
-  public imageSourses: string[] = [
-    "assets/Image/EnemyClassic.png",
-    "assets/Image/EnemyClassic2.png"
-  ]
+    public imageSourses: string[] = [
+        "assets/Image/EnemyClassic.png",
+        "assets/Image/EnemyClassic2.png"
+    ]
 
-  constructor() {
-    this._x = this._startPosX;
-    this._y = this._startPosY;
+    constructor() {
+        this.Coords = new Points(
+            Math.random() * window.innerWidth - 25,
+            Math.random() * window.innerHeight - 45
+        );
 
-    this._speed = Math.floor(Math.random() * (10 - 50 + 1) + 50);
+        this.MathLogicForMove = new EnemyReplacePosLogic(this.Coords);
 
-    this._enemy = ViewChild("enemyDiv");
-  }
+        this._speedOfEnemyMove = Math.floor(Math.random() * (10 - 50 + 1) + 50);
+        this._speedOfEnemyMoveAnimation = 250;
 
-  ngAfterViewInit(): void {
-    console.log(`Window inner width: ${window.innerWidth}`);
-    console.log(`Window inner height: ${window.innerHeight}`);
-
-    this.moveEnemyLogic();
-    this.moveEnemyAnimation();
-  }
-
-  moveEnemyAnimation() {
-    let status: boolean = true;
-    setInterval(function (_object: EnemyClassicComponent) {
-
-      _object._enemy.nativeElement.src =
-        status ? _object.imageSourses[0] : _object.imageSourses[1];
-
-      status = !status;
-
-    }, 250, this)
-  }
-
-  moveEnemyLogic(){
-
-    setInterval(function(_object:EnemyClassicComponent) {
-
-      TopLeftPositionMoveLogic(_object);
-
-      BottomLeftPositionMoveLogic(_object);
-
-      TopRightPositionMoveLogic(_object);
-
-      BottomRightPositionMoveLogic(_object);
-
-      _object._enemy.nativeElement.style.top = _object._y + "px";
-      _object._enemy.nativeElement.style.left = _object._x + "px";
-
-    }, this._speed, this)
-  }
-}
-
-function TopLeftPositionMoveLogic(_object:EnemyClassicComponent) {
-  if (_object._startPosX < window.innerWidth / 2 && _object._startPosY < window.innerHeight / 2) {
-    if (_object._x < window.innerWidth / 2) {
-      _object._x++;
+        this._enemy = ViewChild("enemyDiv");
     }
-    if (_object._y < window.innerHeight / 2) {
-      _object._y++;
-    }
-    if ((_object._y >= window.innerHeight / 2) && (_object._x >= window.innerWidth / 2)) {
-      updateCoordinates(_object);
-    }
-  }
-}
 
-function BottomLeftPositionMoveLogic(_object:EnemyClassicComponent) {
-  if (_object._startPosX > window.innerWidth / 2 && _object._startPosY < window.innerHeight / 2) {
-    if (_object._x > window.innerWidth / 2) {
-      _object._x--;
-    }
-    if (_object._y < window.innerHeight / 2) {
-      _object._y++;
-    }
-    if ((_object._y >= window.innerHeight / 2) && (_object._x <= window.innerWidth / 2)) {
-      updateCoordinates(_object);
-    }
-  }
-}
+    ngAfterViewInit(): void {
+        console.log(`Window inner width: ${window.innerWidth}`);
+        console.log(`Window inner height: ${window.innerHeight}`);
 
-function TopRightPositionMoveLogic(_object:EnemyClassicComponent) {
-  if (_object._startPosX < window.innerWidth / 2 && _object._startPosY > window.innerHeight / 2) {
-    if (_object._x < window.innerWidth / 2) {
-      _object._x++;
+        this.moveEnemyLogic();
+        this.moveEnemyAnimation();
     }
-    if (_object._y > window.innerHeight / 2) {
-      _object._y--;
-    }
-    if ((_object._y <= window.innerHeight / 2) && (_object._x >= window.innerWidth / 2)) {
-      updateCoordinates(_object);
-    }
-  }
-}
 
-function BottomRightPositionMoveLogic(_object:EnemyClassicComponent) {
-  if (_object._startPosX > window.innerWidth / 2 && _object._startPosY > window.innerHeight / 2) {
-    if (_object._x > window.innerWidth / 2) {
-      _object._x--;
-    }
-    if (_object._y > window.innerHeight / 2) {
-      _object._y--;
-    }
-    if ((_object._y < window.innerHeight / 2) && (_object._x < window.innerWidth / 2)) {
-      updateCoordinates(_object);
-    }
-  }
-}
+    moveEnemyAnimation() {
+        let status: boolean = true;
+        setInterval(function (_object: EnemyClassicComponent) {
 
-function updateCoordinates(_object:EnemyClassicComponent){
-  _object._startPosX = Math.random() * window.innerWidth;
-  _object._startPosY = Math.random() * window.innerHeight;
-  _object._x = _object._startPosX;
-  _object._y = _object._startPosY;
+            _object._enemy.nativeElement.src =
+                status ? _object.imageSourses[0] : _object.imageSourses[1];
+
+            status = !status;
+
+        }, this._speedOfEnemyMoveAnimation, this)
+    }
+
+    moveEnemyLogic() {
+
+        setInterval(function (_object: EnemyClassicComponent) {
+
+            _object.MathLogicForMove.TopLeftPositionMoveLogic();
+
+            _object.MathLogicForMove.BottomLeftPositionMoveLogic();
+
+            _object.MathLogicForMove.TopRightPositionMoveLogic();
+
+            _object.MathLogicForMove.BottomRightPositionMoveLogic();
+
+            _object._enemy.nativeElement.style.top = _object.MathLogicForMove.getCoordinates()._CurrentPosY + "px";
+            _object._enemy.nativeElement.style.left = _object.MathLogicForMove.getCoordinates()._CurrentPosX + "px";
+
+        }, this._speedOfEnemyMove, this)
+    }
 }
